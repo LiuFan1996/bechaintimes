@@ -1,0 +1,72 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:p="http://www.springframework.org/schema/p"
+xmlns:context="http://www.springframework.org/schema/context"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xmlns:tx="http://www.springframework.org/schema/tx"
+
+xsi:schemaLocation=
+  "http://www.springframework.org/schema/beans
+   http://www.springframework.org/schema/beans/spring-beans.xsd
+   http://www.springframework.org/schema/context
+   http://www.springframework.org/schema/context/spring-context.xsd
+   http://www.springframework.org/schema/aop
+   http://www.springframework.org/schema/aop/spring-aop.xsd
+   http://www.springframework.org/schema/tx
+   http://www.springframework.org/schema/tx/spring-tx.xsd">
+   
+   <!-- 配置注解扫描范围 -->   
+   <context:component-scan base-package="com.bechain.service"/>
+   
+   <!-- 引入属性文件 -->
+   <context:property-placeholder location="classpath:db.properties" />
+    
+    <!-- 配置数据源 -->
+    <bean name="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.driverClass}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.pwd}" />
+    </bean>
+    
+    
+    <!-- MyBatis配置 -->
+    
+    <!-- 1.配置MyBatis中sessionFactory -->
+    <bean id="mySqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+      <property name="dataSource" ref="dataSource" />
+      <property name="configLocation" value="classpath:mybatis.xml" />
+      <property name="mapperLocations" value="classpath:com/bechain/mapper/*.xml" />
+    </bean>
+    
+    <!-- 2.mybatis自动扫描加载Sql映射文件:SQL映射器  -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+      <property name="basePackage" value="com.bechain.mapper" />
+    </bean>  
+     
+   
+   <!-- Spring4.x事物管理实现 :声明式事物管理 -->
+   
+   <!-- 1.配置Spring4的事物管理器 :DataSourceTransactionManager,底层就是JDBC事物 -->
+   <bean id="tx" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <property name="dataSource" ref="dataSource"></property>
+   </bean>
+   <!-- 2.配置Advice通知 (切面:Spring提供专门处理事物的切面) -->  
+   <tx:advice transaction-manager="tx" id="txAdvice">
+      <tx:attributes>
+        <!-- 目标方法:当前事物作用在哪些方法上 -->
+        <tx:method name="update*"/>
+        <tx:method name="delete*"/>
+        <tx:method name="save*"/>
+      </tx:attributes>
+   </tx:advice>
+   <!-- 3.配置AOP -->  
+   <aop:config>
+      <!-- 配置切点表达式 -->
+      <aop:pointcut expression="execution(* com.bechain.service.*.*(..))" id="txpointcut"/>
+   
+      <!-- 事物增强(切面+切点表达式) -->
+      <aop:advisor advice-ref="txAdvice" pointcut-ref="txpointcut"/>
+   </aop:config>
+     
+</beans>

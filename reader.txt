@@ -1,0 +1,1 @@
+http://localhost:8080/bechaintimes/regist.do?id=1001&email=aaa&password=1234

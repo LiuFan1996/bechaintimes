@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.bechain.mapper.ArticleMapper">
+	<!--插入文章到数据库-->
+	<insert id="saveArticle" parameterType="com.bechain.bean.Article">
+		insert into
+		article(classify,title,writer,ico,body,date)
+		values(#{classify},#{title},#{writer},#{ico},#{body},#{date})
+	</insert>
+
+	<!--根据id删除文章-->
+	<delete id="deleteArticle" parameterType="com.bechain.bean.Article">
+		delete from article
+		where id=#{id}
+	</delete>
+
+	<!-- 根据id更新文章 -->
+	<update id="updateArticle" parameterType="com.bechain.bean.Article">
+		update article
+		<set>
+			classify=#{classify},
+			title = #{title},
+			ico = #{ico},
+			body = #{body},
+			date = #{date}
+		</set>
+		where id= #{id}
+	</update>
+
+	<!-- 根据id查询文章 -->
+	<select id="selectArticle" parameterType="com.bechain.bean.Article"
+		resultType="com.bechain.bean.Article">
+		select * from article where id=#{id}
+	</select>
+	
+	<!-- 查询所有文章的id和title -->
+	<select id="selectAllArticle" resultType="com.bechain.bean.Article">
+		select * from article
+	</select>
+
+</mapper>

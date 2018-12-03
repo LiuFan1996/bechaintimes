@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="bechaintimes"
+  id="myeclipse.1535533483911"
+  context-root="/bechaintimes"
+  j2ee-spec="5.0"
+  archive="bechaintimes.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
